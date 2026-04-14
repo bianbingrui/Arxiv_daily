@@ -12,7 +12,8 @@ It does four things:
 ## Quick start
 
 ```bash
-cd /Users/bianbingrui/Documents/Arxiv_daily
+git clone https://github.com/your-username/Arxiv_daily.git
+cd Arxiv_daily
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -51,7 +52,7 @@ https://arxiv.org/category_taxonomy
 Use `cron` on macOS/Linux:
 
 ```cron
-0 8 * * * cd /Users/bianbingrui/Documents/Arxiv_daily && /bin/zsh -lc 'source .venv/bin/activate && arxiv-daily --days-back 1 --limit 20'
+0 8 * * * cd /path/to/Arxiv_daily && /bin/zsh -lc 'source .venv/bin/activate && arxiv-daily --days-back 1 --limit 20'
 ```
 
 That runs every day at 8:00 AM local time.

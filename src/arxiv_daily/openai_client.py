@@ -20,6 +20,33 @@ class PaperAnalysis:
     recommended_for_you: bool
 
 
+def extract_response_text(data: dict) -> str | None:
+    output = data.get("output")
+    if not isinstance(output, list):
+        return None
+
+    for item in output:
+        if not isinstance(item, dict):
+            continue
+
+        content = item.get("content")
+        if not isinstance(content, list):
+            continue
+
+        for block in content:
+            if not isinstance(block, dict):
+                continue
+
+            text = block.get("text")
+            if isinstance(text, str) and text.strip():
+                return text
+
+    if isinstance(data.get("output_text"), str) and data["output_text"].strip():
+        return data["output_text"]
+
+    return None
+
+
 def build_prompt(paper: Paper, interest_profile: str) -> str:
     return f"""
 You are screening newly updated arXiv papers for a researcher.
@@ -92,11 +119,7 @@ def analyze_paper(
         body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"OpenAI API error ({exc.code}): {body}") from exc
 
-    content = (
-        data.get("output", [{}])[0]
-        .get("content", [{}])[0]
-        .get("text")
-    )
+    content = extract_response_text(data)
     if not content:
         raise RuntimeError(f"Unexpected OpenAI response shape: {json.dumps(data)[:800]}")
 
